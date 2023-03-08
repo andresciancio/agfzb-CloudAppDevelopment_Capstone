@@ -1,18 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+{% extends "djangoapp/base_layout.html" %}
+{% block content %}
 
-    <body>
+<div class="jumbotron">
+  <h1 class="display-4">{{ dealership.full_name }}</h1>
+  <p class="lead">
+    {{ dealership.address }} - {{ dealership.city }} - {{ dealership.zip }} - {{ dealership.st}}
+  </p>
+ 
+ 
+  {% if user.is_authenticated %}
 
-    <!--Add a nav bar here -->
+  <a class="btn btn-primary btn-lg" href="{% url 'djangoapp:add_review' dealership.id %}" role="button">Add review</a>
+  {% endif %}
+</div>
 
-    <!-- Add reviews as cards -->
+<br />
+<h3>Reviews for <strong>{{ dealership.full_name }}</strong></h3>
+<div class=container>
 
-    </body>
+    <div class="card-columns">
+    
+        {% for review in reviews %}
+    
 
-</html>
+            <div class="card  ">
+
+       
+                    {% if review.sentiment.sentiment.document.label == 'positive' %}
+                        <img class="card-img-left m-2" width="30" src="{{MEDIA_URL}}/emoji/positive.png">
+                    {% endif %}
+                    {% if review.sentiment.sentiment.document.label  == 'neutral'%}
+                        <img class="card-img-left m-2" width="30" src="{{MEDIA_URL}}/emoji/neutral.png">
+                    {% endif %}
+                    {% if review.sentiment.sentiment.document.label  == 'negative'%}
+                        <img class="card-img-left m-2" width="30" src="{{MEDIA_URL}}/emoji/negative.png">
+                    {% endif %}
+   
+               
+                <div class="card-body bg-light">
+                    <h5 class="card-title">
+                      
+                        {{ review.car_make }},  {{ review.car_model}}
+                        <br />
+                        {{ review.purchase_date }}
+                        </h5>
+                   
+                    <p class="card-text">
+
+                        <em> {{ review.review}}</em>
+                    </p>
+                </div>
+      
+             
+    
+            </div>
+    
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}
